@@ -1,0 +1,40 @@
+{
+	"schemaVersion": 1,
+	"id": "echoshaper",
+	"version": "${version}",
+	"name": "Echoshaper",
+	"description": "This is a worldshaping mod for survival made by Profet :).",
+	"authors": [
+		"Profet"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "MIT",
+	"icon": "assets/echoshaper/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.profet.echoshaper.Echoshaper"
+		],
+		"client": [
+			"net.profet.echoshaper.EchoshaperClient"
+		],
+		"fabric-datagen": [
+			"net.profet.echoshaper.EchoshaperDataGenerator"
+		]
+	},
+	"mixins": [
+		"echoshaper.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.16.7",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
