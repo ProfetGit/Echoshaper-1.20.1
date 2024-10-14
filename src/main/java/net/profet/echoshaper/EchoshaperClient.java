@@ -9,6 +9,5 @@ public class EchoshaperClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         EntityRendererRegistry.register(EchoshaperEntities.ECHOSHAPER_PROJECTILE, EchoshaperProjectileRenderer::new);
-        Echoshaper.LOGGER.info("EchoshaperProjectileRenderer registered successfully.");
     }
 }

@@ -12,7 +12,6 @@
 		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
 	"license": "MIT",
-	"icon": "assets/echoshaper/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
@@ -25,9 +24,6 @@
 			"net.profet.echoshaper.EchoshaperDataGenerator"
 		]
 	},
-	"mixins": [
-		"echoshaper.mixins.json"
-	],
 	"depends": {
 		"fabricloader": ">=0.16.7",
 		"minecraft": "~1.20.1",
