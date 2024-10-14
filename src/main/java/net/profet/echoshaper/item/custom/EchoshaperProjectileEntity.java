@@ -38,9 +38,9 @@ public class EchoshaperProjectileEntity extends ProjectileEntity {
 
     public EchoshaperProjectileEntity(World world, LivingEntity owner) {
         this(EchoshaperEntities.ECHOSHAPER_PROJECTILE, world);
-        setOwner(owner);
-        setPosition(owner.getEyePos());
-        setVelocity(owner, owner.getPitch(), owner.getYaw(), 0.0F, 2.0F, 1.0F);
+        this.setOwner(owner);
+        this.setPosition(owner.getEyePos());
+        this.setVelocity(owner, owner.getPitch(), owner.getYaw(), 0.0F, 2.0F, 1.0F);
         this.startPos = owner.getEyePos();
     }
 
@@ -138,23 +138,25 @@ public class EchoshaperProjectileEntity extends ProjectileEntity {
         damageNearbyEntities(center);
     }
 
+
     private boolean canDestroyBlock(BlockPos pos) {
         BlockState state = this.getWorld().getBlockState(pos);
         return !state.isAir() && state.getBlock().getBlastResistance() < BLOCK_DAMAGE;
     }
 
     private void damageNearbyEntities(BlockPos center) {
-        Box damageBox = new Box(center).expand(BASE_HOLE_RADIUS * 1.5);
+        Box damageBox = new Box(center).expand(BASE_HOLE_RADIUS * 2.0); // Increase damage range when fully charged
         List<Entity> nearbyEntities = this.getWorld().getOtherEntities(this, damageBox);
         for (Entity entity : nearbyEntities) {
             if (entity instanceof LivingEntity) {
                 double distance = entity.squaredDistanceTo(this);
-                if (distance < BASE_HOLE_RADIUS * BASE_HOLE_RADIUS * 2.25) {
+                if (distance < BASE_HOLE_RADIUS * BASE_HOLE_RADIUS * 3.0) { // Increase damage radius factor for more impact
                     damageEntity(entity);
                 }
             }
         }
     }
+
 
     private void createHitEffect(Vec3d pos) {
         if (this.getWorld() instanceof ServerWorld serverWorld) {
