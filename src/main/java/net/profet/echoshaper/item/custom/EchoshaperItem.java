@@ -4,19 +4,29 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.UseAction;  // Ensure this import is present
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.UseAction;
 import net.minecraft.world.World;
 
 public class EchoshaperItem extends Item {
-    private static final int MAX_CHARGE_TIME = 60;  // Max time for charge (in ticks)
-    private static final int MIN_CHARGE_TIME = 20;  // Minimum charge time for small effect
+    public enum Mode {
+        HOLE
+    }
+
+    private static final int MAX_CHARGE_TIME = 100;  // Define the maximum charge time
+    private static final int MIN_CHARGE_TIME = 20;   // Define the minimum charge time
+
+    private Mode currentMode = Mode.HOLE;
 
     public EchoshaperItem(Settings settings) {
         super(settings);
+    }
+
+    public Mode getCurrentMode() {
+        return currentMode;
     }
 
     @Override
@@ -40,23 +50,26 @@ public class EchoshaperItem extends Item {
 
         int chargeTime = this.getMaxUseTime(stack) - remainingUseTicks;
         if (!world.isClient) {
-            // Determine the charge level and adjust the projectile accordingly
-            int radius = calculateHoleRadius(chargeTime);
-
-            // Play the sonic boom sound when the projectile is released
-            world.playSound(null, player.getX(), player.getY(), player.getZ(),
-                    SoundEvents.ENTITY_WARDEN_SONIC_BOOM, SoundCategory.PLAYERS, 1.0F, 1.0F);
-
-            // Spawn the projectile with different sizes based on charge
-            EchoshaperProjectileEntity projectile = new EchoshaperProjectileEntity(world, player);
-            EchoshaperProjectileEntity.setBaseHoleRadius(radius);
-
-            // Spawn the projectile in the world
-            world.spawnEntity(projectile);
+            handleHoleMode(world, player, chargeTime);
         }
 
         // Set cooldown (this could vary depending on charge time)
         player.getItemCooldownManager().set(this, 20);
+    }
+
+    private void handleHoleMode(World world, PlayerEntity player, int chargeTime) {
+        int radius = calculateHoleRadius(chargeTime);
+
+        // Play the sonic boom sound when the projectile is released
+        world.playSound(null, player.getX(), player.getY(), player.getZ(),
+                SoundEvents.ENTITY_WARDEN_SONIC_BOOM, SoundCategory.PLAYERS, 1.0F, 1.0F);
+
+        // Spawn the projectile with different sizes based on charge
+        EchoshaperProjectileEntity projectile = new EchoshaperProjectileEntity(world, player, EchoshaperProjectileEntity.Mode.HOLE);
+        EchoshaperProjectileEntity.setBaseHoleRadius(radius);
+
+        // Spawn the projectile in the world
+        world.spawnEntity(projectile);
     }
 
     @Override
@@ -69,6 +82,12 @@ public class EchoshaperItem extends Item {
         return UseAction.BOW;  // Charging animation
     }
 
+    /**
+     * Calculates the hole radius based on the charge time.
+     *
+     * @param chargeTime the time the item was charged
+     * @return the radius of the hole
+     */
     private int calculateHoleRadius(int chargeTime) {
         if (chargeTime >= MAX_CHARGE_TIME) {
             return 15;  // Maximum radius for fully charged
